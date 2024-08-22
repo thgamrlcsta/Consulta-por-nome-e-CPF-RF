@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <title>Consulta de Dados</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Consulta de Dados</h1>
+        <form method="POST">
+            <label for="nome">Nome:</label>
+            <input type="text" id="nome" name="nome">
+            <label for="cpf">CPF:</label>
+            <input type="text" id="cpf" name="cpf">
+            <button type="submit">Buscar Nome/CPF</button>
+
+        </form>
+
+        <h2>Resultados</h2>
+        {% if resultados %}
+            <form method="POST" action="/export">
+                <input type="hidden" name="resultados" value="{{ resultados }}">
+                <button type="submit">Exportar para Excel</button>
+            </form>
+            {% for cnpj_raiz, dados in resultados.items() %}
+                <div class="result-block">
+                    
+                    {% for resultado, origem_tabela in dados %}
+                        {% if "empresas" in origem_tabela.lower() %}
+                            <div class="empresa">
+                                <h3><strong>Nome da Empresa:</strong> {{ resultado[1] }}</h3>
+                                <p><strong>Natureza Juridica:</strong> {{ resultado[2] }}</p>
+                                <p><strong>Qualificação do responsavel:</strong> {{ resultado[3] }}</p>
+                                <p><strong>Capital Social:</strong> {{ resultado[4] }}</p>
+                                <p><strong>Porte da empresa:</strong> {{ resultado[5] }}</p>
+                                <p><strong>Ente Federativo:</strong> {{ resultado[6] }}</p>
+                            </div>
+                        {% elif "estabelecimentos" in origem_tabela.lower() %}
+                            <div class="estabelecimento">
+                                <p><strong>Matriz/Filial:</strong> {{ resultado[1] }}</p>
+                                <p><strong>Nome Fantasia:</strong> {{ resultado[2] }}</p>
+                                <p><strong>Situação Cadastral:</strong> {{ resultado[3] }}</p>
+                                <p><strong>Data Situação Cadastral:</strong> {{ resultado[4] }}</p>
+                                <p><strong>Motivo Situação Cadastral:</strong> {{ resultado[5] }}</p>
+                                <p><strong>Nome da Cidade no Exterior:</strong> {{ resultado[6] }}</p>
+                                <p><strong>País:</strong> {{ resultado[7] }}</p>
+                                <p><strong>Data de Início de Atividade:</strong> {{ resultado[8] }}</p>
+                                <p><strong>CNAE Principal:</strong> {{ resultado[9] }}</p>
+                                <p><strong>CNAE Secundário:</strong> {{ resultado[10] }}</p>
+                                <p><strong>Correio Eletrônico:</strong> {{ resultado[11] }}</p>
+                                <p><strong>Situação Especial:</strong> {{ resultado[12] }}</p>
+                                <p><strong>Data Situação Especial:</strong> {{ resultado[13] }}</p>
+                                <p><strong>CNPJ Completo:</strong> {{ resultado[14] }}</p>
+                                <p><strong>Endereço:</strong> {{ resultado[15] }}</p>
+                                <p><strong>Telefones:</strong> {{ resultado[16] }}</p>
+                            </div>
+                            {% elif "socios" in origem_tabela.lower() %}
+                            <div class="socio">
+                                <p><strong>Sócios:</strong> {{ resultado[5] }}</p>
+                                <p><strong>País:</strong> {{ resultado[1] }}</p>
+                                <p><strong>Representante Legal:</strong> {{ resultado[2] }}</p>
+                                <p><strong>Nome do Representante:</strong> {{ resultado[3] }}</p>
+                                <p><strong>Qualificação do Representante:</strong> {{ resultado[4] }}</p>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        {% else %}
+        {% endif %}
+    </div>
+</body>
+</html>
